@@ -105,3 +105,6 @@ dist
 
 # command aliases
 src/commands/_*.js
+
+# audio Files
+*.ogg

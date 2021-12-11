@@ -8,6 +8,13 @@ const client = new Client({
 });
 global.commands = {};
 global.queues = new Collection();
+global.sql = mysql.createConnection({
+  host: process.env.dbHost, 
+  user: process.env.dbUser, 
+  password: process.env.dbPassword, 
+  database: process.env.dbDatabase, 
+  port: process.env.dbPort
+});
 
 readdirSync(join(__dirname, "handlers")).forEach((fname) => {
   const f = require(join(__dirname, "handlers", fname));
