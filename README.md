@@ -24,7 +24,7 @@ npm start
 - コマンド名
   - 説明
   - エイリアス(別名)
-<br>
+
 - connect
   - 接続して読み上げを開始します
   - s, start, con, c, join
