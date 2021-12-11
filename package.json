@@ -1,0 +1,17 @@
+{
+  "main": "src/index.js",
+  "scripts": {
+    "format": "prettier -w src/**/*.{js,ts,json}",
+    "alias": "node src/alias",
+    "test": "node .",
+    "start": "npm run alias && npm run format && npm test"
+  },
+  "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "@discordjs/voice": "^0.7.5",
+    "discord.js": "^13.3.1",
+    "dotenv": "^10.0.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.19.0",
+    "tweetnacl": "^1.0.3"
+  }
+}

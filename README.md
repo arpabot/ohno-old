@@ -1,2 +1,2 @@
 # ohno
-tts
+Azure Cognitive Serviceを利用した読み上げbot。
