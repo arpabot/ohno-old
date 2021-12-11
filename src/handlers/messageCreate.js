@@ -10,10 +10,12 @@ module.exports = async (message) => {
   } else if (queues.get(message.channel.id)) {
     const serverQueue = queues.get(message.channel.id);
     let text =
-      (message.member.displayName || message.author.username) +
-      "。" +
+      /*(message.member.displayName || message.author.username) +
+      "。" +*/
       Util.cleanContent(
-        message.content.replace(/```.*```/gs, ""),
+        message.content
+          .replace(/```.*```/gs, "")
+          .replace(/https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+/g, "URL省略"),
         message.channel
       );
     if (serverQueue.isPlaying) {

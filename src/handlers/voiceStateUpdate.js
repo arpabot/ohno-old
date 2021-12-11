@@ -4,7 +4,7 @@ module.exports = async (oldState, newState) => {
   );
 
   if (!serverQueue) return;
-  if (!newState.channel) {
+  if (serverQueue.voiceChannel.members.size === 1) {
     if (serverQueue.term) return;
     serverQueue.term = true;
     await serverQueue.connection.disconnect();
