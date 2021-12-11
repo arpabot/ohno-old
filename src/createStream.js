@@ -1,7 +1,5 @@
 const sdk = require("microsoft-cognitiveservices-speech-sdk");
 const { createReadStream, unlinkSync } = require("fs");
-sdk.PropertyId.SpeechServiceConnection_SynthOutputFormat =
-  "ogg-48khz-16bit-mono-opus";
 
 module.exports = (text, apiKey, region, rate = "1.2") => {
   return new Promise(async (resolve, reject) => {
@@ -10,7 +8,7 @@ module.exports = (text, apiKey, region, rate = "1.2") => {
     const speechConfig = sdk.SpeechConfig.fromSubscription(apiKey, region);
     speechConfig.speechSynthesisOutputFormat = 23;
     let synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
-    let ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+    let ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="ja-JP">
     <voice name="ja-JP-NanamiNeural">
         <prosody rate="${rate}">
             ${sdk.SpeechSynthesizer.XMLEncode(text)}
