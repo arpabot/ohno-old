@@ -7,7 +7,7 @@ module.exports = async (message) => {
   if (!serverQueue)
     return message.reply("あなたはボットがいるボイスチャンネルにいません。");
   serverQueue.term = true;
-  message.guild.me.voice.disconnect();
+  serverQueue.connection.disconnect();
   message.reply("切断しました。");
   queues.delete(serverQueue.textChannel.id);
 };

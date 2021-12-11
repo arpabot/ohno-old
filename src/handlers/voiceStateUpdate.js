@@ -7,7 +7,7 @@ module.exports = async (oldState, newState) => {
   if (!newState.channel) {
     if (serverQueue.term) return;
     serverQueue.term = true;
-    await newState.guild.me.voice.disconnect();
+    await serverQueue.connection.disconnect();
     await serverQueue.textChannel
       .send("ボイスチャンネルに誰もいなくなったため退出しました。")
       .catch(console.error);
