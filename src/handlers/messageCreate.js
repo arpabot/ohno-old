@@ -9,6 +9,7 @@ module.exports = async (message) => {
     if (command in commands) commands[command](message, args);
   } else if (queues.get(message.channel.id)) {
     const serverQueue = queues.get(message.channel.id);
+    const dict = dictCache.get(message.guild.id);
     let text =
       /*(message.member.displayName || message.author.username) +
       "。" +*/
@@ -18,6 +19,11 @@ module.exports = async (message) => {
           .replace(/https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+/g, "URL省略"),
         message.channel
       );
+    if (dict) {
+      for (let x in dict) {
+        text = text.replaceAll(x, dict[x]);
+      }
+    }
     if (serverQueue.isPlaying) {
       serverQueue.texts.push(text);
     } else {

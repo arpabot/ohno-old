@@ -2,18 +2,20 @@ const { Client } = require("discord.js");
 const { Collection } = require("@discordjs/collection");
 const { readdirSync } = require("fs");
 const { join } = require("path");
+const mysql = require("mysql");
 require("dotenv").config();
 const client = new Client({
   intents: 32509,
 });
 global.commands = {};
 global.queues = new Collection();
-global.sql = mysql.createConnection({
-  host: process.env.dbHost, 
-  user: process.env.dbUser, 
-  password: process.env.dbPassword, 
-  database: process.env.dbDatabase, 
-  port: process.env.dbPort
+global.dictCache = new Collection();
+global.dicts = mysql.createConnection({
+  host: process.env.dbHost,
+  user: process.env.dbUser,
+  password: process.env.dbPassword,
+  database: "dictionaries",
+  port: +process.env.dbPort,
 });
 
 readdirSync(join(__dirname, "handlers")).forEach((fname) => {

@@ -9,5 +9,6 @@ module.exports = async (message) => {
   serverQueue.term = true;
   serverQueue.connection.disconnect();
   message.reply("切断しました。");
+  dictCache.delete(message.guild.id);
   queues.delete(serverQueue.textChannel.id);
 };

@@ -3,10 +3,9 @@ const {
   createAudioPlayer,
   createAudioResource,
   StreamType,
-  entersState,
-  AudioPlayerStatus,
+  VoiceConnectionDisconnectReason,
 } = require("@discordjs/voice");
-const createStream = require("../createStream");
+const createStream = require("../createStreamWatson");
 
 module.exports = async (message) => {
   if (!message.member.voice.channel)
@@ -17,6 +16,17 @@ module.exports = async (message) => {
     return message.reply(
       "あなたがいるボイスチャンネルに参加することができません。"
     );
+  let cache;
+  if (
+    await dicts
+      .queryPromise("show tables like ?", [message.guild.id])
+      .catch(console.error)
+  )
+    cache = (
+      await dicts
+        .queryPromise(`select * from \`${message.guild.id}\``)
+        .catch(console.error)
+    )?.[0];
   const serverQueue = {};
   serverQueue.connection = joinVoiceChannel({
     adapterCreator: message.guild.voiceAdapterCreator,
@@ -50,5 +60,6 @@ module.exports = async (message) => {
   };
   serverQueue.connection.subscribe(serverQueue.player);
   queues.set(message.channel.id, serverQueue);
+  dictCache.set(message.guild.id, cache);
   message.reply("接続しました。");
 };
