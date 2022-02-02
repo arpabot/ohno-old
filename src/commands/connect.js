@@ -2,10 +2,9 @@ const {
   joinVoiceChannel,
   createAudioPlayer,
   createAudioResource,
-  StreamType,
-  VoiceConnectionDisconnectReason,
+  StreamType
 } = require("@discordjs/voice");
-const createStream = require("../createStreamWatson");
+const createStream = require("../createStream");
 
 module.exports = async (message) => {
   if (!message.member.voice.channel)
