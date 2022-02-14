@@ -34,4 +34,4 @@ readdirSync(join(__dirname, "commands")).forEach((fname) => {
   ));
 });
 
-client.login(process.env.token);
+client.login(process.env.token
