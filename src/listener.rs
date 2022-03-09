@@ -1,11 +1,11 @@
 use crate::{Data, Error};
 use poise::serenity_prelude as serenity;
 
-pub async fn event_listener<'a: 'static>(
+pub async fn event_listener(
   _ctx: &serenity::Context,
-  event: &poise::Event<'a>,
+  event: &poise::Event<'_>,
   _framework: &poise::Framework<Data, Error>,
-  user_data: &'a Data,
+  user_data: &Data,
 ) -> Result<(), Error> {
   match event {
     poise::Event::Ready { data_about_bot: _ } => {
@@ -13,9 +13,7 @@ pub async fn event_listener<'a: 'static>(
     }
     poise::Event::Message { new_message: msg } => {
       let key: u64 = msg.guild_id.unwrap().into();
-      if let Some(queue) = user_data.queues.lock().unwrap().get(&key) {
-        queue.play(msg.content.clone().into());
-      };
+      user_data.queues.lock().unwrap().get(&key).unwrap().play(msg.content.clone()).await;
     }
     _ => (),
   }

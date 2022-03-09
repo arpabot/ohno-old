@@ -6,15 +6,11 @@ use cognitive_services_speech_sdk_rs::{
   speech::{SpeechConfig, SpeechSynthesizer},
 };
 use poise::serenity_prelude::{
-  async_trait,
-  id::{ChannelId, GuildId},
   model::channel::GuildChannel,
   Mutex as PoiseMutex,
 };
 use songbird::{
-  events::{Event, TrackEvent},
   input::{codec::Codec, reader::Reader, Input},
-  EventContext, EventHandler,
 };
 use std::{
   env,
@@ -23,9 +19,6 @@ use std::{
 
 pub struct Queue {
   pub strings: Mutex<Vec<String>>,
-  pub playing: Mutex<bool>,
-  pub guild_id: GuildId,
-  pub channel_id: ChannelId,
   pub handler: Arc<PoiseMutex<songbird::Call>>,
 }
 
@@ -34,25 +27,7 @@ struct OnEnd {
 }
 
 impl Queue {
-  pub async fn play(&'static self, text: Option<String>) {
-    if *self.playing.lock().unwrap() {
-      let mut strings = self.strings.lock().unwrap();
-      if let Some(s) = text {
-        strings.push(s);
-      }
-    } else {
-      *self.playing.lock().unwrap() = true;
-      let s = match text {
-        Some(s) => s,
-        _ => {
-          let mut strings = self.strings.lock().unwrap();
-          if strings.len() != 0 {
-            strings.remove(0)
-          } else {
-            "".into()
-          }
-        }
-      };
+  pub async fn play(&self, text: String) {
       let stream = PullAudioOutputStream::create_pull_stream().unwrap();
       let audio_config = AudioConfig::from_stream_output(&stream).unwrap();
       let mut speech_config =
@@ -71,7 +46,7 @@ impl Queue {
               {}\
           </prosody>\
         </voice>\
-      </speak>", "1.2", s)).await;
+      </speak>", "1.2", text)).await;
       if let Ok(bytes) = speech_result {
         let reader = Reader::from(bytes.audio_data);
         let decoder = Decoder::new(SampleRate::Hz48000, Channels::Mono).unwrap();
@@ -83,10 +58,8 @@ impl Queue {
           .handler
           .lock()
           .await
-          .play_source(input)
-          .add_event(Event::Track(TrackEvent::End), OnEnd { queue: self })
-          .ok();
-      }
+          .play_source(input);
+      
     }
   }
 
@@ -101,9 +74,6 @@ impl Queue {
     match result {
       Ok(()) => Ok(Self {
         strings: Mutex::new(vec![]),
-        playing: Mutex::new(false),
-        channel_id,
-        guild_id,
         handler,
       }),
       Err(e) => {
@@ -111,14 +81,5 @@ impl Queue {
         Err(())
       }
     }
-  }
-}
-
-#[async_trait]
-impl EventHandler for OnEnd {
-  async fn act(&self, _ctx: &EventContext<'_>) -> Option<Event> {
-    *self.queue.playing.lock().unwrap() = false;
-    self.queue.play(None).await;
-    None
   }
 }
