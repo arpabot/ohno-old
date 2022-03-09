@@ -1,0 +1,17 @@
+[package]
+name = "ohno"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dotenv = "0.15.0"
+songbird = "0.2.2"
+tokio = { version = "1.17.0", features = [ "full" ] }
+poise = { path = "./deps/poise" }
+cognitive-services-speech-sdk-rs = { path = "./deps/cognitive-services-speech-sdk-rs" }
+serenity = "0.10.10"
+audiopus = "0.2"
+async-trait = "0.1.52"
