@@ -1,4 +1,0 @@
-{
-  "connect": ["s", "start", "con", "join", "c"],
-  "disconnect": ["e", "end", "dis", "leave", "dc"]
-}
