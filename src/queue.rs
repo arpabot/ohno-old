@@ -26,12 +26,25 @@ struct OnEnd {
 }
 
 impl Queue {
-  pub async fn play(&'static self, text: String) {
+  pub async fn play(&'static self, text: Option<String>) {
     if *self.playing.lock().unwrap() {
       let mut strings = self.strings.lock().unwrap();
-      strings.push(text);
+      if let Some(s) = text {
+        strings.push(s);
+      }
     } else {
       *self.playing.lock().unwrap() = true;
+      let s = match text {
+        Some(s) => s,
+        _ => {
+          let mut strings = self.strings.lock().unwrap();
+          if strings.len() != 0 {
+            strings.remove(0)
+          } else {
+            "".into()
+          }
+        }
+      };
       let stream = PullAudioOutputStream::create_pull_stream().unwrap();
       let audio_config = AudioConfig::from_stream_output(&stream).unwrap();
       let mut speech_config = SpeechConfig::from_subscription(
@@ -49,7 +62,7 @@ impl Queue {
               {}\
           </prosody>\
         </voice>\
-      </speak>", "1.2", text)).await;
+      </speak>", "1.2", s)).await;
       match speech_result {
         Ok(bytes) => {
           let reader = Reader::from(bytes.audio_data);
@@ -92,13 +105,7 @@ impl Queue {
 impl EventHandler for OnEnd {
   async fn act(&self, _ctx: &EventContext<'_>) -> Option<Event> {
     *self.queue.playing.lock().unwrap() = false;
-    let mut strings = self.queue.strings.lock().unwrap();
-    if strings.len() != 0 {
-      let text = strings.remove(0);
-      self.queue.play(text.to_owned()).await;
-      None
-    } else {
-      None
-    }
+    self.queue.play(None).await;
+    None
   }
 }
