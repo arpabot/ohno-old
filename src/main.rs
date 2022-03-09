@@ -1,10 +1,11 @@
 use dotenv::dotenv;
 use poise::{Framework, FrameworkOptions, PrefixFrameworkOptions};
+use songbird::SerenityInit;
 use std::{collections::HashMap, env, sync::Mutex};
 mod commands;
 mod listener;
-mod queue;
 
+pub mod queue;
 pub struct Data {
   pub queues: Mutex<HashMap<u64, queue::Queue>>,
 }
@@ -25,7 +26,11 @@ async fn main() {
       })
     })
     .options(FrameworkOptions {
-      commands: vec![commands::general::help(), commands::general::register()],
+      commands: vec![
+        commands::general::help(),
+        commands::general::register(),
+        commands::voice::connect(),
+      ],
       prefix_options: PrefixFrameworkOptions {
         prefix: env::var("prefix").ok(),
         ..Default::default()
@@ -35,6 +40,7 @@ async fn main() {
       },
       ..Default::default()
     })
+    .client_settings(|c| c.register_songbird())
     .run()
     .await
     .unwrap();

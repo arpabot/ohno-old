@@ -8,10 +8,10 @@ license = "MIT"
 
 [dependencies]
 dotenv = "0.15.0"
-songbird = "0.2.2"
+songbird = { git = "https://github.com/serenity-rs/songbird", branch = "next" }
 tokio = { version = "1.17.0", features = [ "full" ] }
 poise = { path = "./deps/poise" }
-cognitive-services-speech-sdk-rs = { path = "./deps/cognitive-services-speech-sdk-rs" }
+cognitive-services-speech-sdk-rs = "0.1.4"
 serenity = "0.10.10"
 audiopus = "0.2"
 async-trait = "0.1.52"
