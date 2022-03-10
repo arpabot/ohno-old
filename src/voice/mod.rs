@@ -1,4 +1,4 @@
-use reqwest::Client;
+use reqwest::{Client, Proxy};
 use bytes::Bytes;
 use std::fmt::{Display, Formatter};
 use serde_json::Value;
@@ -15,14 +15,26 @@ pub struct VoiceClient {
 type Result<T, E = Error> = std::result::Result<T, E>;
 
 impl VoiceClient {
-  pub fn new<T: AsRef<str>>(key: T, region: T, output: OutputKind) -> Self{
+  pub fn new<T: AsRef<str>>(key: T, region: T, output: OutputKind, proxy: Option<T>) -> Self {
+    let client = match proxy {
+      Some(prox) => {
+        let proxy_auth = std::env::var("proxyAuth").ok();
+        let mut p = Proxy::http(prox.as_ref()).unwrap();
+        if let Some(auth) = proxy_auth {
+          let split: Vec<&str> = auth.split(":").collect();
+          p = p.clone().basic_auth(split[0], split[1]);
+        };
+        Client::builder().proxy(p).build().unwrap()
+      }
+      None => Client::new()
+    };
     Self {
       key: key.as_ref().to_string(),
       region: region.as_ref().to_string(),
-      client: Client::new(),
+      client,
       voice: String::from("ja-JP-NanamiNeural"),
       rate: 1.2,
-      output
+      output,
     }
   }
   async fn authorize(&self) -> Result<String> {
@@ -40,6 +52,7 @@ impl VoiceClient {
     }
   }
   pub async fn speech<T: AsRef<str>>(&self, text: T) -> Result<Bytes> {
+    println!("{:?}", self.client);
       let fmt_ssml = format!(
       "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"ja-JP\">\
         <voice name=\"{voice}\">\
@@ -81,7 +94,7 @@ impl VoiceClient {
       Ok(res) => {
         match res.text().await {
           Ok(text) => {
-             match serde_json::from_str::<Value>(&text) {
+            match serde_json::from_str::<Value>(&text) {
               Ok(json) => {
                 match json.get("voices") {
                   Some(voicevalue) => {

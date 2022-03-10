@@ -23,7 +23,7 @@ struct OnEnd {
 
 impl Queue {
   pub async fn play(&self, text: String) {
-      let voice_client = VoiceClient::new(env::var("apiKey").unwrap(), env::var("region").unwrap(), OutputKind::Raw48KHz16BitMonoPcm);
+      let voice_client = VoiceClient::new(env::var("apiKey").unwrap(), env::var("region").unwrap(), OutputKind::Raw48KHz16BitMonoPcm, env::var("proxy").ok());
       let speech_result = voice_client.speech(text).await;
       if let Ok(bytes) = speech_result {
         let reader = Reader::from(bytes.to_vec());
