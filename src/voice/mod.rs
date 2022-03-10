@@ -48,7 +48,6 @@ impl VoiceClient {
             </prosody>\
           </voice>\
         </speak>", rate=self.rate, text=text.as_ref(), voice=self.voice);
-      println!("{}", &*self.output.to_string());
       match self.client.post(self.baseurl("v1"))
       .header("Content-Type", "application/ssml+xml")
       .header("User-Agent", "OHNO/0.1.0")
