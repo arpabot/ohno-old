@@ -32,7 +32,7 @@ pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
             .data()
             .queues
             .lock()
-            .unwrap()
+            .await
             .insert(ctx.guild_id().unwrap().into(), q);
           ctx.say("接続しました").await?;
         }
