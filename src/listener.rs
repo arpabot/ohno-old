@@ -13,7 +13,7 @@ pub async fn event_listener(
     }
     poise::Event::Message { new_message: msg } => {
       let key: u64 = msg.guild_id.unwrap().into();
-      user_data.queues.lock().unwrap().get(&key).unwrap().play(msg.content.clone()).await;
+      user_data.queues.lock().await.get(&key).unwrap().play(msg.content.clone()).await;
     }
     _ => (),
   }
