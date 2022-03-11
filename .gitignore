@@ -108,3 +108,5 @@ src/commands/_*.js
 
 # audio Files
 *.ogg
+
+target
