@@ -3,6 +3,9 @@ use poise::serenity_prelude::model::channel::Channel;
 
 #[poise::command(prefix_command, slash_command)]
 pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
+  if ctx.guild().is_none() {
+    return Ok(())
+  }
   let channel_id = ctx
     .guild()
     .unwrap()
@@ -52,6 +55,9 @@ pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
 
 #[poise::command(prefix_command, slash_command)]
 pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
+  if ctx.guild().is_none() {
+    return Ok(())
+  }
   let is_connected = match ctx
     .guild()
     .unwrap()
