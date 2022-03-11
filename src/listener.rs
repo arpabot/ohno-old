@@ -1,5 +1,6 @@
 use crate::{Data, Error};
 use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::model::{gateway::Activity, user::OnlineStatus};
 
 pub async fn event_listener(
   ctx: &serenity::Context,
@@ -9,7 +10,8 @@ pub async fn event_listener(
 ) -> Result<(), Error> {
   match event {
     poise::Event::Ready { data_about_bot: _ } => {
-      println!("Ready!")
+      println!("Ready!");
+      ctx.set_presence(Some(Activity::streaming("Your Voice 24/7", "https://github.com/Sueqkjs/ohno")), OnlineStatus::DoNotDisturb).await;
     }
     poise::Event::Message { new_message: msg } => {
       let key: u64 = msg.guild_id.unwrap().into();
