@@ -11,7 +11,7 @@ pub async fn event_listener(
   match event {
     poise::Event::Ready { data_about_bot: _ } => {
       println!("Ready!");
-      ctx.set_presence(Some(Activity::streaming("Your Voice 24/7", "https://github.com/Sueqkjs/ohno")), OnlineStatus::DoNotDisturb).await;
+      ctx.set_presence(Some(Activity::listening("Your Voice 24/7")), OnlineStatus::DoNotDisturb).await;
     }
     poise::Event::Message { new_message: msg } => {
       let key: u64 = msg.guild_id.unwrap().into();
