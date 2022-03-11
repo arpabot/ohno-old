@@ -1,8 +1,8 @@
 use dotenv::dotenv;
+use futures::lock::Mutex;
 use poise::{Framework, FrameworkOptions, PrefixFrameworkOptions};
 use songbird::SerenityInit;
 use std::{collections::HashMap, env};
-use futures::lock::Mutex;
 mod voice;
 
 mod commands;
@@ -33,6 +33,7 @@ async fn main() {
         commands::general::help(),
         commands::general::register(),
         commands::voice::connect(),
+        commands::voice::leave(),
       ],
       prefix_options: PrefixFrameworkOptions {
         prefix: env::var("prefix").ok(),

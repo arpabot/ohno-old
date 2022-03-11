@@ -2,7 +2,7 @@ use crate::{Data, Error};
 use poise::serenity_prelude as serenity;
 
 pub async fn event_listener(
-  _ctx: &serenity::Context,
+  ctx: &serenity::Context,
   event: &poise::Event<'_>,
   _framework: &poise::Framework<Data, Error>,
   user_data: &Data,
@@ -13,7 +13,20 @@ pub async fn event_listener(
     }
     poise::Event::Message { new_message: msg } => {
       let key: u64 = msg.guild_id.unwrap().into();
-      user_data.queues.lock().await.get(&key).unwrap().play(msg.content.clone()).await;
+      if user_data.queues.lock().await.contains_key(&key) {
+        if user_data.queues.lock().await.get(&key).unwrap().channel_id
+          == msg.channel(&ctx.http).await?.id()
+        {
+          user_data
+            .queues
+            .lock()
+            .await
+            .get(&key)
+            .unwrap()
+            .play(msg.content.clone())
+            .await;
+        }
+      }
     }
     _ => (),
   }
