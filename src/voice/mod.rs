@@ -14,6 +14,7 @@ pub struct VoiceClient {
 
 type Result<T, E = Error> = std::result::Result<T, E>;
 
+#[allow(dead_code)]
 impl VoiceClient {
   pub fn new<T: AsRef<str>>(key: T, region: T, output: OutputKind) -> Self {
     Self {
@@ -145,12 +146,13 @@ pub enum OutputKind {
 impl ToString for OutputKind {
   fn to_string(&self) -> String {
     match self {
-      Raw48KHz16BitMonoPcm => "raw-48khz-16bit-mono-pcm".to_string(),
+      OutputKind::Raw48KHz16BitMonoPcm => "raw-48khz-16bit-mono-pcm".to_string(),
     }
   }
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum Error {
   ReqwestError(reqwest::Error),
   VoiceNotSet,
