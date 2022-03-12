@@ -3,31 +3,35 @@
 ## これはなに
 Azure Cognitive ServiceのText to Speechを利用した読み上げBot<br>
 
-セルフホストめんどくさい系の人のためのアレ: [導入](https://discord.com/api/oauth2/authorize?client_id=919024472936288287&permissions=274981719296&scope=bot)
+Pre-Hosted: [導入](https://discord.com/api/oauth2/authorize?client_id=951733862923395072&permissions=3148800&scope=bot%20applications.commands)
 
-## 動かし方
-.envをいじれ
+## セルフホスト
 
+### 必要なもの
+- autoconf 
+- automake
+- libtool
+- libssl-dev 
+- libtool
+
+### .envを編集する
 ```properties
 token=your Discord Bot token
 prefix=prefix
 apiKey=Azure Cognitive Service Api Key
 region=Azure Cognitive Service Region
 ```
-そして起動
 
+### 起動
 ```bash
-npm start
+cargo run --release
 ```
 
 ## コマンドのガイド
-- コマンド名
-  - 説明
-  - エイリアス(別名)
+- スラッシュコマンド対応です
 
-- connect
-  - 接続して読み上げを開始します
-  - s, start, con, c, join
-- disconnect
-  - 切断して読み上げを終了します
-  - e, end, dis, dc, leave
+| コマンド | 説明 | 備考 |
+| - | - | - |
+| /help | コマンドのヘルプを表示します | registerは見れません |
+| /connect | ボイスチャンネルに接続します |  |
+| /leave | ボイスチャンネルから退出します |  |
