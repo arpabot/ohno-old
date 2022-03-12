@@ -976,6 +976,7 @@ dependencies = [
  "dotenv",
  "futures",
  "poise",
+ "regex",
  "reqwest",
  "serde_json",
  "serenity 0.10.10 (registry+https://github.com/rust-lang/crates.io-index)",
