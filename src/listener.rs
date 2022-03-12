@@ -1,7 +1,7 @@
 use crate::{Data, Error};
 use poise::serenity_prelude as serenity;
 use poise::serenity_prelude::{
-  model::{gateway::Activity, id::ChannelId, user::OnlineStatus},
+  model::{gateway::Activity, id::{ChannelId, GuildId}, user::OnlineStatus},
   Member,
 };
 use regex::Regex;
@@ -24,7 +24,7 @@ pub async fn event_listener(
     }
     poise::Event::Message { new_message: msg } => {
       let re = Regex::new(r#"https?://[\w/:%#$&?()~.=+-]+"#)?;
-      let key: u64 = msg.guild_id.unwrap().into();
+      let key: u64 = msg.guild_id.unwrap_or(GuildId(0)).into();
       if user_data.queues.lock().await.contains_key(&key) {
         if user_data.queues.lock().await.get(&key).unwrap().channel_id
           == msg.channel(&ctx.http).await?.id()

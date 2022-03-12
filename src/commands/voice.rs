@@ -1,6 +1,7 @@
 use crate::{queue, Context, Error};
 use poise::serenity_prelude::model::channel::Channel;
 
+/// ボイスチャンネルに接続します
 #[poise::command(prefix_command, slash_command)]
 pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
   if ctx.guild().is_none() {
@@ -53,6 +54,7 @@ pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
   Ok(())
 }
 
+/// ボイスチャンネルから退出します
 #[poise::command(prefix_command, slash_command)]
 pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
   if ctx.guild().is_none() {
