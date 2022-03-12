@@ -3,7 +3,7 @@
 ## これはなに
 Azure Cognitive ServiceのText to Speechを利用した読み上げBot<br>
 
-Pre-Hosted: [導入](https://discord.com/api/oauth2/authorize?client_id=951733862923395072&permissions=3148800&scope=bot%20applications.commands)
+Pre-Hosted: [導入](https://discord.com/api/oauth2/authorize?client_id=946032263915782184&permissions=3148800&scope=bot%20applications.commands)
 
 ## セルフホスト
 
