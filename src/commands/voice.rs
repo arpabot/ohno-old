@@ -4,7 +4,7 @@ use poise::serenity_prelude::model::channel::Channel;
 #[poise::command(prefix_command, slash_command)]
 pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
   if ctx.guild().is_none() {
-    return Ok(())
+    return Ok(());
   }
   let channel_id = ctx
     .guild()
@@ -56,7 +56,7 @@ pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
 #[poise::command(prefix_command, slash_command)]
 pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
   if ctx.guild().is_none() {
-    return Ok(())
+    return Ok(());
   }
   let is_connected = match ctx
     .guild()
@@ -67,20 +67,17 @@ pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
   {
     Some(cid) => {
       let mut result = false;
-      if let Some(bot_cid) = ctx
+      if let Some(q) = ctx
         .data()
         .queues
         .lock()
         .await
         .get(ctx.guild_id().unwrap().as_u64())
-        .unwrap()
-        .handler
-        .lock()
-        .await
-        .current_channel()
       {
-        if *cid.as_u64() == bot_cid.0 {
-          result = true;
+        if let Some(bot_cid) = q.handler.lock().await.current_channel() {
+          if *cid.as_u64() == bot_cid.0 {
+            result = true;
+          }
         }
       }
       result

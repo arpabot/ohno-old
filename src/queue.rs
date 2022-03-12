@@ -7,6 +7,7 @@ use poise::serenity_prelude::{
 use songbird::input::{codec::Codec, reader::Reader, Input};
 use std::{env, sync::Arc};
 
+#[derive(Debug)]
 pub struct Queue {
   pub channel_id: ChannelId,
   pub handler: Arc<PoiseMutex<songbird::Call>>,
