@@ -1,5 +1,5 @@
 use crate::voice::{OutputKind, VoiceClient};
-use crate::Context;
+use crate::{Context, Error};
 use poise::serenity_prelude::{
   model::{channel::GuildChannel, id::ChannelId},
   Mutex as PoiseMutex,
@@ -30,22 +30,20 @@ impl Queue {
     }
   }
 
-  pub async fn new(ctx: Context<'_>, vc: GuildChannel) -> Result<Self, ()> {
+  pub async fn new(ctx: Context<'_>, vc: GuildChannel) -> Result<Self, Error> {
     let guild_id = ctx.guild_id().unwrap();
     let manager = songbird::get(ctx.discord())
       .await
       .expect("Songbird Voice client placed in at initialisation.")
       .clone();
     let (handler, result) = manager.join(guild_id, vc.id).await;
-    match result {
-      Ok(()) => Ok(Self {
-        channel_id: ctx.channel_id(),
-        handler,
-      }),
-      Err(e) => {
-        ctx.say(format!("Error: {}", e)).await.ok();
-        Err(())
-      }
-    }
+    let mut lock = handler.lock().await;
+    lock.deafen(true).await?;
+    drop(lock);
+    result?;
+    Ok(Self {
+      channel_id: ctx.channel_id(),
+      handler,
+    })
   }
 }
