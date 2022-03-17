@@ -1,7 +1,9 @@
 use crate::{Data, Error};
 use poise::serenity_prelude as serenity;
-use poise::serenity_prelude::{
-  model::{gateway::Activity, id::{ChannelId, GuildId}, user::OnlineStatus},
+use poise::serenity_prelude::model::{
+  gateway::Activity,
+  id::{ChannelId, GuildId},
+  user::OnlineStatus,
 };
 use regex::Regex;
 
@@ -22,7 +24,8 @@ pub async fn event_listener(
         .await;
     }
     poise::Event::Message { new_message: msg } => {
-      let re = Regex::new(r#"https?://[\w/:%#$&?()~.=+-]+"#)?;
+      let url = Regex::new(r#"https?://[\w/:%#$&?()~.=+-]+"#)?;
+      let code_block = Regex::new(r#"```.*```"#)?;
       let key: u64 = msg.guild_id.unwrap_or(GuildId(0)).into();
       #[allow(clippy::collapsible_if)]
       if user_data.queues.lock().await.contains_key(&key) {
@@ -36,7 +39,13 @@ pub async fn event_listener(
             .get(&key)
             .unwrap()
             .play(
-              re.replace_all(&msg.content_safe(&ctx.cache), "URL省略")
+              code_block
+                .replace_all(
+                  &url
+                    .replace_all(&msg.content_safe(&ctx.cache), "URL省略")
+                    .to_string(),
+                  "コードブロック省略",
+                )
                 .chars()
                 .take(500)
                 .collect::<String>(),
@@ -86,7 +95,8 @@ pub async fn event_listener(
         if members
           .iter()
           .filter(|x| x.user.id.as_u64() != ctx.cache.current_user_id().as_u64())
-          .count() == 0
+          .count()
+          == 0
         {
           user_data
             .queues
