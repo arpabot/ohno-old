@@ -1,20 +1,20 @@
 [package]
-name = "ohno"
-version = "0.1.0"
 edition = "2021"
 license = "MIT"
+name = "ohno"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dotenv = "0.15.0"
-songbird = { git = "https://github.com/serenity-rs/songbird", branch = "next" }
-tokio = { version = "1.17.0", features = [ "full" ] }
-poise = { git = "https://github.com/kangalioo/poise" }
-serenity = "0.10.10"
 async-trait = "0.1.52"
-futures = "0"
-reqwest = "0"
 bytes = "1"
+dotenv = "0.15.0"
+futures = "0"
+poise = {git = "https://github.com/kangalioo/poise", branch = "develop"}
+regex = "1.6.0"
+reqwest = "0"
 serde_json = "1"
-regex = "1.5.5"
+serenity = "0.10.10"
+songbird = {git = "https://github.com/serenity-rs/songbird", features=["builtin-queue"]}
+tokio = {version = "1.17.0", features = ["full"]}

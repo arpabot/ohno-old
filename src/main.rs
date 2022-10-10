@@ -1,6 +1,6 @@
 use dotenv::dotenv;
 use futures::lock::Mutex;
-use poise::{Framework, FrameworkOptions, PrefixFrameworkOptions};
+use poise::{Framework, FrameworkOptions, PrefixFrameworkOptions, serenity_prelude::GatewayIntents};
 use songbird::SerenityInit;
 use std::{collections::HashMap, env};
 mod voice;
@@ -19,7 +19,8 @@ pub type Context<'a> = poise::Context<'a, Data, Error>;
 async fn main() {
   dotenv().ok();
   let token = env::var("token").unwrap();
-  Framework::build()
+  Framework::builder()
+  .intents(GatewayIntents::all())
     .token(token)
     .user_data_setup(move |_ctx, _ready, _framework| {
       Box::pin(async move {

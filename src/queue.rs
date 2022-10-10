@@ -4,7 +4,7 @@ use poise::serenity_prelude::{
   model::{channel::GuildChannel, id::ChannelId},
   Mutex as PoiseMutex,
 };
-use songbird::input::{codec::Codec, reader::Reader, Input};
+use songbird::{tracks::create_player,input::{codec::Codec, reader::Reader, Input}};
 use std::{env, sync::Arc};
 
 #[derive(Debug)]
@@ -25,8 +25,9 @@ impl Queue {
       let reader = Reader::from(bytes.to_vec());
       let kind = Codec::Pcm;
       let input = Input::new(false, reader, kind, songbird::input::Container::Raw, None);
-
-      self.handler.lock().await.play_source(input);
+      let (mut audio, _) = create_player(input);
+      audio.set_volume(0.5);
+      self.handler.lock().await.enqueue(audio);
     }
   }
 

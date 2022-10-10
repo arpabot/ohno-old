@@ -10,9 +10,9 @@ use regex::Regex;
 pub async fn event_listener(
   ctx: &serenity::Context,
   event: &poise::Event<'_>,
-  _framework: &poise::Framework<Data, Error>,
+  _framework: poise::FrameworkContext<'_, Data, Error>,
   user_data: &Data,
-) -> Result<(), Error> {
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
   match event {
     poise::Event::Ready { data_about_bot: _ } => {
       println!("Ready!");
@@ -25,31 +25,45 @@ pub async fn event_listener(
     }
     poise::Event::Message { new_message: msg } => {
       let url = Regex::new(r#"https?://[\w/:%#$&?()~.=+-]+"#)?;
-      let code_block = Regex::new(r#"```.*```"#)?;
+      let code_block = Regex::new(r#"(?sm)```.*```"#)?;
       let key: u64 = msg.guild_id.unwrap_or(GuildId(0)).into();
       #[allow(clippy::collapsible_if)]
       if user_data.queues.lock().await.contains_key(&key) {
         if user_data.queues.lock().await.get(&key).unwrap().channel_id
           == msg.channel(&ctx.http).await?.id()
         {
+          println!("{:?}", serenity::content_safe(
+            ctx,
+            code_block
+              .replace_all(
+                &url.replace_all(&msg.content, "URL省略"),
+                "コードブロック省略",
+              )
+              .chars()
+              .take(150)
+              .collect::<String>(),
+            &serenity::utils::ContentSafeOptions::default(),
+            &msg.mentions,
+          ));
           user_data
             .queues
             .lock()
             .await
             .get(&key)
             .unwrap()
-            .play(
+            .play(serenity::content_safe(
+              ctx,
               code_block
                 .replace_all(
-                  &url
-                    .replace_all(&msg.content_safe(&ctx.cache), "URL省略")
-                    .to_string(),
+                  &url.replace_all(&msg.content, "URL省略"),
                   "コードブロック省略",
                 )
                 .chars()
-                .take(500)
+                .take(150)
                 .collect::<String>(),
-            )
+              &serenity::utils::ContentSafeOptions::default(),
+              &msg.mentions,
+            ))
             .await;
         }
       }
