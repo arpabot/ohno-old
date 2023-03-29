@@ -94,24 +94,13 @@ pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
     .contains_key(ctx.guild_id().unwrap().as_u64())
     && is_connected
   {
-    ctx
-      .data()
-      .queues
-      .lock()
-      .await
-      .get(ctx.guild_id().unwrap().as_u64())
-      .unwrap()
-      .handler
-      .lock()
-      .await
-      .leave()
-      .await?;
-    ctx
-      .data()
-      .queues
-      .lock()
-      .await
-      .remove(ctx.guild_id().unwrap().as_u64());
+    let mut lock = ctx.data().queues.lock().await;
+    let queue = lock.get(ctx.guild_id().unwrap().as_u64()).unwrap();
+    let mut handler = queue.handler.lock().await;
+    handler.leave().await?;
+    handler.queue().stop();
+    drop(handler);
+    lock.remove(ctx.guild_id().unwrap().as_u64());
     ctx.say("退出しました。").await?;
   } else {
     ctx
