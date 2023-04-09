@@ -33,7 +33,7 @@ impl Queue {
 
   pub async fn new(ctx: Context<'_>, vc: GuildChannel) -> Result<Self, Error> {
     let guild_id = ctx.guild_id().unwrap();
-    let manager = songbird::get(ctx.discord())
+    let manager = songbird::get(ctx.serenity_context())
       .await
       .expect("Songbird Voice client placed in at initialisation.")
       .clone();

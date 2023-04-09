@@ -16,5 +16,9 @@ regex = "1.6.0"
 reqwest = "0"
 serde_json = "1"
 serenity = "0.10.10"
-songbird = {git = "https://github.com/serenity-rs/songbird", features=["builtin-queue"]}
 tokio = {version = "1.17.0", features = ["full"]}
+
+[dependencies.songbird]
+features = ["builtin-queue"]
+git = "https://github.com/Erk-/songbird/"
+branch = "do-not-fail-if-new-opcode"
