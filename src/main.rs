@@ -22,7 +22,7 @@ async fn main() {
   Framework::builder()
   .intents(GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT)
     .token(token)
-    .user_data_setup(move |_ctx, _ready, _framework| {
+    .setup(move |_ctx, _ready, _framework| {
       Box::pin(async move {
         Ok(Data {
           queues: Mutex::new(HashMap::new()),
@@ -40,8 +40,8 @@ async fn main() {
         prefix: env::var("prefix").ok(),
         ..Default::default()
       },
-      listener: |ctx, event, framework, user_data| {
-        Box::pin(listener::event_listener(ctx, event, framework, user_data))
+      event_handler: |ctx, event, framework, data| {
+        Box::pin(listener::event_listener(ctx, event, framework, data))
       },
       ..Default::default()
     })

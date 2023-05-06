@@ -23,7 +23,7 @@ pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
       return Ok(());
     }
   }
-  .to_channel(&ctx.discord().http)
+  .to_channel(&ctx.serenity_context().http)
   .await?;
 
   match connect_to {
@@ -40,14 +40,14 @@ pub async fn connect(ctx: Context<'_>) -> Result<(), Error> {
             .insert(ctx.guild_id().unwrap().into(), q);
           ctx.say("接続しました").await?;
         }
-        _ => {
-          ctx.say("エラーが発生しました").await?;
+        Err(e) => {
+          ctx.say(format!("エラーが発生しました```\n{:#?}```", e)).await?;
         }
       }
     }
     _ => {
       ctx
-        .say("ボイスチャンネルに接続しているか確認してください")
+        .say("エラーが発生しました")
         .await?;
     }
   }
