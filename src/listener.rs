@@ -31,20 +31,35 @@ pub async fn event_listener(
       if user_data.queues.lock().await.contains_key(&key) {
         if user_data.queues.lock().await.get(&key).unwrap().channel_id
           == msg.channel(&ctx.http).await?.id()
+          || user_data
+            .queues
+            .lock()
+            .await
+            .get(&key)
+            .unwrap()
+            .handler
+            .lock()
+            .await
+            .current_channel()
+            .unwrap()
+            == msg.channel(&ctx.http).await?.id().into()
         {
-          println!("{:?}", serenity::content_safe(
-            ctx,
-            code_block
-              .replace_all(
-                &url.replace_all(&msg.content, "URL省略"),
-                "コードブロック省略",
-              )
-              .chars()
-              .take(150)
-              .collect::<String>(),
-            &serenity::utils::ContentSafeOptions::default(),
-            &msg.mentions,
-          ));
+          println!(
+            "{:?}",
+            serenity::content_safe(
+              ctx,
+              code_block
+                .replace_all(
+                  &url.replace_all(&msg.content, "URL省略"),
+                  "コードブロック省略",
+                )
+                .chars()
+                .take(150)
+                .collect::<String>(),
+              &serenity::utils::ContentSafeOptions::default(),
+              &msg.mentions,
+            )
+          );
           user_data
             .queues
             .lock()
