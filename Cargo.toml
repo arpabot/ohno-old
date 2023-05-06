@@ -11,7 +11,7 @@ async-trait = "0.1.52"
 bytes = "1"
 dotenv = "0.15.0"
 futures = "0"
-poise = {git = "https://github.com/kangalioo/poise", branch = "develop"}
+poise = {git = "https://github.com/kangalioo/poise", branch = "current"}
 regex = "1.6.0"
 reqwest = "0"
 serde_json = "1"
