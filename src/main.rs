@@ -20,7 +20,7 @@ async fn main() {
   dotenv().ok();
   let token = env::var("token").unwrap();
   Framework::builder()
-  .intents(GatewayIntents::all())
+  .intents(GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT)
     .token(token)
     .user_data_setup(move |_ctx, _ready, _framework| {
       Box::pin(async move {
