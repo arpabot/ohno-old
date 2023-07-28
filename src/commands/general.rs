@@ -1,7 +1,7 @@
 use crate::{Context, Error};
 
 /// コマンドのヘルプを表示します
-#[poise::command(prefix_command, track_edits, slash_command)]
+#[poise::command(track_edits, slash_command)]
 pub async fn help(
   ctx: Context<'_>,
   #[description = "説明を見たいコマンド"]
@@ -13,7 +13,7 @@ pub async fn help(
     command.as_deref(),
     poise::builtins::HelpConfiguration {
       extra_text_at_bottom: r#"このBotのソースコードはGitHub上で公開されています。
-  https://github.com/Sueqkjs/ohno"#,
+  https://github.com/yuimarudev/ohno"#,
       show_context_menu_commands: true,
       ..Default::default()
     },
@@ -22,7 +22,7 @@ pub async fn help(
   Ok(())
 }
 
-#[poise::command(prefix_command, hide_in_help)]
+#[poise::command(hide_in_help, prefix_command)]
 pub async fn register(ctx: Context<'_>, #[flag] global: bool) -> Result<(), Error> {
   if ctx.guild().is_none() {
     return Ok(());

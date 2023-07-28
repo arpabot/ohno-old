@@ -33,7 +33,7 @@ async fn main() {
       commands: vec![
         commands::general::help(),
         commands::general::register(),
-        commands::voice::connect(),
+        commands::voice::join(),
         commands::voice::leave(),
       ],
       prefix_options: PrefixFrameworkOptions {
