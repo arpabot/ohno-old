@@ -160,9 +160,8 @@ pub async fn event_listener(
             .await?;
         } else {
           if let Some(o) = old {
-            println!("{:?}  {:?} {}", o.member, new.member, new.member.is_none());
             if let Some(member) = &o.member {
-              if new.member.is_none() {
+              if new.deaf == o.deaf && new.mute && o.mute {
                 let name = &member.nick.as_ref().unwrap_or(&member.user.name);
                 play(user_data, key, ctx, &format!("{name}が退出しました")).await;
               }
