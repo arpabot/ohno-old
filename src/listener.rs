@@ -161,8 +161,10 @@ pub async fn event_listener(
         } else {
           if let Some(o) = old {
             if let Some(member) = &o.member {
-              let name = &member.nick.as_ref().unwrap_or(&member.user.name);
-              play(user_data, key, ctx, &format!("{name}が退出しました")).await;
+              if new.member.is_none() {
+                let name = &member.nick.as_ref().unwrap_or(&member.user.name);
+                play(user_data, key, ctx, &format!("{name}が退出しました")).await;
+              }
             }
           } else {
             if let Some(member) = &new.member {
