@@ -161,7 +161,7 @@ pub async fn event_listener(
         } else {
           if let Some(o) = old {
             if let Some(member) = &o.member {
-              if new.deaf == o.deaf && new.mute == o.mute {
+              if new.channel_id.is_none() {
                 let name = &member.nick.as_ref().unwrap_or(&member.user.name);
                 play(user_data, key, ctx, &format!("{name}が退出しました")).await;
               }
