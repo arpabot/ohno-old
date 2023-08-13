@@ -1,10 +1,10 @@
 use crate::{Data, Error};
-use poise::serenity_prelude as serenity;
 use poise::serenity_prelude::model::{
   gateway::Activity,
   id::{ChannelId, GuildId},
   user::OnlineStatus,
 };
+use poise::serenity_prelude::{self as serenity, Context};
 use regex::Regex;
 
 pub async fn event_listener(
@@ -23,6 +23,7 @@ pub async fn event_listener(
         )
         .await;
     }
+
     poise::Event::Message { new_message: msg } => {
       let url = Regex::new(r#"https?://[\w/:%#$&?()~.=+-]+"#)?;
       let code_block = Regex::new(r#"(?sm)```.*```"#)?;
@@ -83,7 +84,8 @@ pub async fn event_listener(
         }
       }
     }
-    poise::Event::VoiceStateUpdate { old: _, new } => {
+
+    poise::Event::VoiceStateUpdate { old, new } => {
       if let Some(gid) = new.guild_id {
         let key: u64 = gid.into();
         if !user_data.queues.lock().await.contains_key(&key) {
@@ -156,6 +158,18 @@ pub async fn event_listener(
               "ボイスチャンネルに誰もいなくなったため退出しました",
             )
             .await?;
+        } else {
+          if let Some(o) = old {
+            if let Some(member) = &o.member {
+              let name = &member.nick.as_ref().unwrap_or(&member.user.name);
+              play(user_data, key, ctx, &format!("{name}が退出しました")).await;
+            }
+          } else {
+            if let Some(member) = &new.member {
+              let name = &member.nick.as_ref().unwrap_or(&member.user.name);
+              play(user_data, key, ctx, &format!("{name}が入室しました")).await;
+            }
+          }
         }
       }
     }
@@ -163,4 +177,20 @@ pub async fn event_listener(
   }
 
   Ok(())
+}
+
+async fn play(user_data: &Data, key: u64, ctx: &Context, text: &str) {
+  user_data
+    .queues
+    .lock()
+    .await
+    .get(&key)
+    .unwrap()
+    .play(serenity::content_safe(
+      ctx,
+      text,
+      &serenity::utils::ContentSafeOptions::default(),
+      &vec![],
+    ))
+    .await;
 }
