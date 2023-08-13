@@ -149,13 +149,13 @@ pub async fn event_listener(
             .await?
             .guild()
             .unwrap();
+          user_data.queues.lock().await.remove(&key);
           text
             .say(
               &ctx.http,
               "ボイスチャンネルに誰もいなくなったため退出しました",
             )
             .await?;
-          user_data.queues.lock().await.remove(&key);
         }
       }
     }
