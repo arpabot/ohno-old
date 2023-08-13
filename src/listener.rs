@@ -160,7 +160,7 @@ pub async fn event_listener(
             .await?;
         } else {
           if let Some(o) = old {
-            println!("{:?}  {:?} {}", old.member, new.member, new.member.is_none());
+            println!("{:?}  {:?} {}", o.member, new.member, new.member.is_none());
             if let Some(member) = &o.member {
               if new.member.is_none() {
                 let name = &member.nick.as_ref().unwrap_or(&member.user.name);
