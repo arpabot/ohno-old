@@ -32,6 +32,22 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
       let queue = queue::Queue::new(ctx, channel).await;
       match queue {
         Ok(q) => {
+          if ctx
+            .data()
+            .queues
+            .lock()
+            .await
+            .contains_key(&ctx.guild_id().unwrap().as_u64())
+          {
+            let mut lock = ctx.data().queues.lock().await;
+            let queue = lock.get(ctx.guild_id().unwrap().as_u64()).unwrap();
+            let mut handler = queue.handler.lock().await;
+            handler.leave().await?;
+            handler.queue().stop();
+            drop(handler);
+            lock.remove(ctx.guild_id().unwrap().as_u64());
+          }
+
           let _ = &mut ctx
             .data()
             .queues
@@ -41,14 +57,14 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
           ctx.say("接続しました").await?;
         }
         Err(e) => {
-          ctx.say(format!("エラーが発生しました```\n{:#?}```", e)).await?;
+          ctx
+            .say(format!("エラーが発生しました```\n{:#?}```", e))
+            .await?;
         }
       }
     }
     _ => {
-      ctx
-        .say("エラーが発生しました")
-        .await?;
+      ctx.say("エラーが発生しました").await?;
     }
   }
   Ok(())
