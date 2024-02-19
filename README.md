@@ -1,3 +1,5 @@
+# Archived. go to [ohno](https://github.com/arpabot/ohno-bot)
+
 # ohno
 
 ## これはなに
